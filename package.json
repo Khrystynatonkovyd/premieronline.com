@@ -1,0 +1,45 @@
+{
+  "name": "premieronline-automation",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production-safe Playwright automation for Premiere Online",
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0",
+    "npm": ">=12.0.0"
+  },
+  "packageManager": "npm@12.0.2",
+  "scripts": {
+    "test": "playwright test --project=guest-chromium",
+    "test:all": "playwright test",
+    "test:smoke": "playwright test --project=guest-chromium --grep @smoke",
+    "test:regression": "playwright test --project=guest-chromium --grep @regression",
+    "test:ui": "playwright test --project=guest-chromium --grep @ui",
+    "test:api": "playwright test --project=api --grep @api --pass-with-no-tests",
+    "test:visitor": "playwright test --project=visitor-chromium",
+    "test:headed": "playwright test --project=guest-chromium --headed",
+    "test:debug": "playwright test --project=guest-chromium --debug",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "tsc --noEmit",
+    "report:allure": "allure generate allure-results --clean -o allure-report && allure open allure-report",
+    "check:docs": "node scripts/verify-docs.mjs",
+    "validate": "npm run format:check && npm run lint && npm run type-check && npm run check:docs",
+    "prepr": "npm run validate && npm run test:smoke"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "1.63.0",
+    "@types/node": "^26.5.1",
+    "allure": "^3.17.0",
+    "allure-playwright": "3.12.1",
+    "dotenv": "^17.4.2",
+    "eslint": "^10.10.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.6",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.0",
+    "zod": "^4.6.5"
+  }
+}

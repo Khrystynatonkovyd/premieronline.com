@@ -1,0 +1,27 @@
+node_modules/
+
+# Local secrets and environment overrides
+.env
+.env.*
+!.env.example
+
+# Authentication state contains session cookies and tokens
+playwright/.auth/
+
+# Playwright and Allure generated artifacts
+test-results/
+playwright-report/
+blob-report/
+allure-results/
+allure-report/
+screenshots/
+traces/
+videos/
+
+# Temporary and editor files
+.DS_Store
+*.log
+coverage/
+tmp/
+.idea/
+.vscode/

@@ -1,0 +1,53 @@
+name: Quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm install --global npm@12.0.2
+      - run: npm ci
+      - run: npm run validate
+
+  guest-smoke:
+    needs: static-checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TEST_ENV: production
+      BASE_URL: https://www.premieronline.com
+      ENABLE_VISITOR_TESTS: 'false'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm install --global npm@12.0.2
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:smoke
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: guest-smoke-artifacts
+          path: |
+            playwright-report/
+            allure-results/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
