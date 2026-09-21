@@ -3,7 +3,15 @@ import prettier from 'eslint-config-prettier';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['node_modules/**', 'allure-report/**', 'allure-results/**', 'test-results/**'] },
+  {
+    ignores: [
+      'node_modules/**',
+      'allure-report/**',
+      'allure-results/**',
+      'playwright-report/**',
+      'test-results/**',
+    ],
+  },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   prettier,

@@ -23,16 +23,10 @@ const projects: NonNullable<PlaywrightTestConfig['projects']> = [
     use: { baseURL: env.API_BASE_URL ?? env.BASE_URL },
   },
   {
-    name: 'visitor-setup',
-    testMatch: /auth\.setup\.ts/,
-    use: browserUse,
-  },
-  {
     name: 'visitor-chromium',
     testMatch: /ui\/.*\.spec\.ts/,
     grep: /@visitor/,
-    dependencies: ['visitor-setup'],
-    use: { ...browserUse, storageState: 'playwright/.auth/visitor.json' },
+    use: browserUse,
   },
 ];
 

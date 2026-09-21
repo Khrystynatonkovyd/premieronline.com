@@ -84,7 +84,6 @@ src/setup/                     Global setup and teardown
 src/test-data/                 Non-sensitive immutable test data
 tests/ui/                      Executable UI scenarios
 tests/api/                     Future API specifications
-playwright/.auth/              Ignored Visitor session state
 ```
 
 ## Reports and artifacts

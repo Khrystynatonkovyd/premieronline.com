@@ -7,7 +7,7 @@ locator details. Configuration validates the environment before Playwright start
 ## Dependency direction
 
 ```text
-tests -> fixtures -> pages/components -> Playwright
+tests -> fixtures -> pages/components -> UI actions -> Playwright
 tests -> API clients -> Playwright request context
 config <- Playwright configuration and authentication setup
 ```
@@ -28,6 +28,11 @@ Each test receives fresh objects bound to its isolated browser page, allowing pa
 locator strategy. The search result table uses `#s_ext_events` because the live application exposes
 no suitable accessible name or test ID for that stable result container.
 
+Reusable browser interactions live in `UiActions`. Page and component objects call these methods
+instead of invoking common Playwright actions directly. Every action logs its start and outcome,
+adds a descriptive context if it fails, and preserves the original error as its cause. Entered
+values are deliberately excluded from logs so credentials and other sensitive data remain private.
+
 ## API clients
 
 `BaseApiClient` centralizes typed Playwright request operations. A future domain client should
@@ -42,9 +47,10 @@ abstraction.
 
 ## Authentication
 
-When `ENABLE_VISITOR_TESTS=true` and both credential variables exist, Playwright adds a setup
-project that signs in and saves `playwright/.auth/visitor.json`. The Visitor project depends on that
-setup and reuses the state. The state is ignored by Git because cookies are equivalent to secrets.
+When `ENABLE_VISITOR_TESTS=true` and both credential variables exist, authenticated tests use a
+fixture chain that opens the home page, follows the header's `Sign in` link, signs in with the
+dedicated Visitor account, and verifies the authenticated navigation contract. Each Visitor test
+gets a fresh isolated browser context and authenticates through this fixture chain.
 
 ## Execution flow
 

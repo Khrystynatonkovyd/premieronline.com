@@ -1,4 +1,5 @@
 import type { Locator, Page } from '@playwright/test';
+import type { UiActions } from '../../utils/ui-actions.js';
 
 export class HeaderComponent {
   readonly logo: Locator;
@@ -9,8 +10,16 @@ export class HeaderComponent {
   readonly arabicLink: Locator;
   readonly signInLink: Locator;
   readonly createAccountLink: Locator;
+  readonly visitorAccountLink: Locator;
+  readonly friendsLink: Locator;
+  readonly messagesLink: Locator;
+  readonly subscriptionsLink: Locator;
+  readonly signOutLink: Locator;
 
-  constructor(private readonly page: Page) {
+  constructor(
+    private readonly page: Page,
+    private readonly actions: UiActions,
+  ) {
     const navigation = page.getByRole('navigation');
     this.logo = navigation.getByRole('link', { name: 'Premiere Online', exact: true });
     this.searchInput = navigation
@@ -25,11 +34,27 @@ export class HeaderComponent {
       name: 'Create Account',
       exact: true,
     });
+
+    // The authenticated navigation has no accessible name or test ID; its stable sub-nav class is
+    // the narrowest application contract available for separating it from the primary navigation.
+    const visitorNavigation = page.locator('nav.sub-nav');
+    this.visitorAccountLink = visitorNavigation.getByRole('link', { name: /Account$/ });
+    this.friendsLink = visitorNavigation.getByRole('link', { name: 'Friends', exact: true });
+    this.messagesLink = visitorNavigation.getByRole('link', { name: 'Messages', exact: true });
+    this.subscriptionsLink = visitorNavigation.getByRole('link', {
+      name: 'Subscriptions',
+      exact: true,
+    });
+    this.signOutLink = page.getByRole('link', { name: 'Sign out', exact: true });
+  }
+
+  async openSignIn(): Promise<void> {
+    await this.actions.click(this.signInLink, 'open the sign-in page from the header');
   }
 
   async search(query: string): Promise<void> {
-    await this.searchInput.fill('');
-    await this.searchInput.pressSequentially(query);
+    await this.actions.fill(this.searchInput, '', 'clear the event search');
+    await this.actions.pressSequentially(this.searchInput, query, 'enter the event search query');
   }
 
   searchResults(): Locator {
